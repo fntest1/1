@@ -6,34 +6,25 @@
     <title>Play YouTube Audio</title>
     <meta name="robots" content="noindex,nofollow,noodp" />
     <style>
-        body {
-            margin: 0;
-            background-color: #000;
-            color: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            font-family: Arial, sans-serif;
-        }
-        audio {
-            width: 80%;
-        }
+        body { margin: 0; }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mediaelement/4.2.9/mediaelementplayer.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mediaelement/4.2.9/mediaelement-and-player.min.js"></script>
 </head>
 <body>
     <audio
         id="player1"
+        type="video/youtube"
         autoplay
-        muted
-        controls>
-        Your browser does not support the audio element.
+        controls
+        style="width: 100%">
     </audio>
 
     <script>
         function getVideoId() {
             const urlParams = new URLSearchParams(window.location.search);
-            return urlParams.get('id'); // الحصول على id الفيديو من الرابط مثل ?id=VIDEO_ID
+            return urlParams.get('id');
         }
 
         document.addEventListener('DOMContentLoaded', function () {
@@ -41,24 +32,17 @@
             const audioElement = document.getElementById('player1');
 
             if (videoId) {
-                // تعيين الرابط لمصدر الفيديو
                 audioElement.src = `https://www.youtube.com/watch?v=${videoId}`;
                 
-                // تشغيل الصوت مكتومًا
-                audioElement.play().then(() => {
-                    console.log('Playback started muted.');
-
-                    // إلغاء الكتم بعد التشغيل
-                    setTimeout(() => {
-                        audioElement.muted = false;
-                        console.log('Audio unmuted.');
-                    }, 1000); // إلغاء الكتم بعد ثانية واحدة
-                }).catch((error) => {
-                    console.error('Autoplay failed:', error);
-                    alert('Autoplay failed. Please click play manually.');
+                $(audioElement).mediaelementplayer({
+                    success: function (media) {
+                        media.play().then(() => {
+                            console.log('Playback started.');
+                        }).catch((error) => {
+                            console.log('Autoplay with sound is not allowed:', error);
+                        });
+                    }
                 });
-            } else {
-                alert("No video ID provided in the URL.");
             }
         });
     </script>
