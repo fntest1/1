@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Play YouTube Audio</title>
+    <meta name="robots" content="noindex,nofollow,noodp" />
+    <style>
+        body {
+            margin: 0;
+            background-color: #000;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+        }
+        audio {
+            width: 80%;
+        }
+    </style>
+</head>
+<body>
+    <audio
+        id="player1"
+        autoplay
+        muted
+        controls>
+        Your browser does not support the audio element.
+    </audio>
+
+    <script>
+        function getVideoId() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('id'); // الحصول على id الفيديو من الرابط مثل ?id=VIDEO_ID
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const videoId = getVideoId();
+            const audioElement = document.getElementById('player1');
+
+            if (videoId) {
+                // تعيين الرابط لمصدر الفيديو
+                audioElement.src = `https://www.youtube.com/watch?v=${videoId}`;
+                
+                // تشغيل الصوت مكتومًا
+                audioElement.play().then(() => {
+                    console.log('Playback started muted.');
+
+                    // إلغاء الكتم بعد التشغيل
+                    setTimeout(() => {
+                        audioElement.muted = false;
+                        console.log('Audio unmuted.');
+                    }, 1000); // إلغاء الكتم بعد ثانية واحدة
+                }).catch((error) => {
+                    console.error('Autoplay failed:', error);
+                    alert('Autoplay failed. Please click play manually.');
+                });
+            } else {
+                alert("No video ID provided in the URL.");
+            }
+        });
+    </script>
+</body>
+</html>
